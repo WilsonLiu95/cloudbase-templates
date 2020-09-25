@@ -24,6 +24,21 @@ app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
 
+
+// 中间件判断跳转
+app.use(async (ctx, next) => {
+
+  const {hostname, 'x-client-proto': clientProto} = ctx.request;
+  console.log(`https://www.xiaoxili.com${ctx.originalUrl}`)
+  // 协议强制 https、域名强制跳转到带 wwww 的域名
+  if(clientProto=='http' || hostname =='xiaoxili.com'){
+    return ctx.redirect(`https://www.xiaoxili.com${ctx.originalUrl}`)
+  }else{
+    // 执行正常逻辑
+    await next()
+  }
+})
+
 // logger
 app.use(async (ctx, next) => {
   const start = new Date()
